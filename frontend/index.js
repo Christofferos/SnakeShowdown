@@ -2,7 +2,7 @@ const BG_COLOUR = "#231f20";
 const SNAKE_COLOUR = "#c2c2c2";
 const FOOD_COLOUR = "#e66916";
 
-const socket = io("https://sleepy-island-33889.herokuapp.com/");
+const socket = io("https://warm-harbor-48465.herokuapp.com/"); // Heroku URL. Heroku takes care of PORT number.
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
