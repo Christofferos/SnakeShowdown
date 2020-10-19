@@ -1,3 +1,4 @@
+/* # Game Variables # */
 const io = require("socket.io")();
 const { initGame, gameLoop, getUpdatedVelocity } = require("./game");
 const { FRAME_RATE } = require("./constants");
@@ -6,6 +7,7 @@ const { makeid } = require("./utils");
 const state = {};
 const clientRooms = {};
 
+/* ## Connection: ## */
 io.on("connection", (client) => {
   client.on("keydown", handleKeydown);
   client.on("newGame", handleNewGame);
@@ -46,16 +48,25 @@ io.on("connection", (client) => {
     clientRooms[client.id] = roomName;
     client.emit("gameCode", roomName);
 
-    state[roomName] = initGame();
+    state[roomName] = initGame([0, 0]);
 
     client.join(roomName);
     client.number = 1;
     client.emit("init", 1);
   }
 
+  function delayKeyDownInput(roomName) {
+    if (state[roomName] == null) return;
+    state[roomName].players[client.number - 1].inputDelay = true;
+    setTimeout(() => {
+      if (state[roomName] == null) return;
+      state[roomName].players[client.number - 1].inputDelay = false;
+    }, 75);
+  }
+
   function handleKeydown(keyCode) {
     const roomName = clientRooms[client.id];
-    if (!roomName) {
+    if (!roomName || state[roomName] == null) {
       return;
     }
     try {
@@ -65,35 +76,52 @@ io.on("connection", (client) => {
       return;
     }
 
-    const vel = getUpdatedVelocity(keyCode);
+    const vel = getUpdatedVelocity(keyCode, state[roomName].players[client.number - 1]);
 
-    if (vel) {
+    if (vel !== -1 && state[roomName].players[client.number - 1].inputDelay == false && state[roomName] !== null) {
       state[roomName].players[client.number - 1].vel = vel;
+      delayKeyDownInput(roomName);
     }
   }
 });
 
+/* ## StartGameInterval: ## */
 function startGameInterval(roomName) {
-  const intervalId = setInterval(() => {
-    const winner = gameLoop(state[roomName]);
+  let intervalId = setInterval(() => intervalIdProcedure(), 1000 / FRAME_RATE);
+
+  function intervalIdProcedure() {
+    let winner = gameLoop(state[roomName]);
 
     if (!winner) {
       emitGameState(roomName, state[roomName]);
     } else {
-      emitGameOver(roomName, winner);
-      state[roomName] = null;
       clearInterval(intervalId);
+      if (winner == 1 || winner == -1) state[roomName].scores.P1++;
+      if (winner == 2 || winner == -1) state[roomName].scores.P2++;
+      emitGameOver(roomName, winner, { P1: state[roomName].scores.P1, P2: state[roomName].scores.P2 });
+      //
+      if (Math.max(state[roomName].scores.P1, state[roomName].scores.P2) < 3) {
+        state[roomName] = initGame([state[roomName].scores.P1, state[roomName].scores.P2]);
+        setTimeout(() => (intervalId = setInterval(() => intervalIdProcedure(), 1000 / FRAME_RATE)), 7000);
+      } else {
+        // console.log("SERVER END GAME");
+        state[roomName] = null; // Not necessary if game is restarted.
+      }
+      //
     }
-  }, 1000 / FRAME_RATE);
+  }
 }
 
+/* ## EmitGameState: ## */
 function emitGameState(room, gameState) {
   // Send this event to everyone in the room.
   io.sockets.in(room).emit("gameState", JSON.stringify(gameState));
 }
 
-function emitGameOver(room, winner) {
-  io.sockets.in(room).emit("gameOver", JSON.stringify({ winner }));
+/* ## EmitGameOver: ## */
+function emitGameOver(room, winner, score) {
+  io.sockets.in(room).emit("gameOver", JSON.stringify({ winner, score }));
 }
 
+/* ## Listen on provided PORT: ## */
 io.listen(process.env.PORT || 3000);
