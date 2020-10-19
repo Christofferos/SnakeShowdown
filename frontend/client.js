@@ -3,7 +3,7 @@
 //*/
 
 /* [DEVELOPMENT]: LOCAL */
-/*const socket = io("http://localhost:3000");*/
+//const socket = io("http://localhost:3000");
 
 /* [PUBLIC]: ONLINE (socket, listens for messages from the server) */
 const socket = io("https://warm-harbor-48465.herokuapp.com/");
@@ -27,6 +27,7 @@ const gameCodeDisplay = document.getElementById("gameCodeDisplay");
 const postGameCard = document.querySelector(".postGame");
 const postGameCardText = document.querySelector(".postGame .text");
 const postGameCountdown = document.querySelector(".postGame .countdown");
+const postGameRestartButton = document.querySelector(".postGame .restartButton");
 
 let scoreboard = document.querySelector(".scores");
 
@@ -44,6 +45,7 @@ let canvas, contex;
 let playerNumber;
 let gameActive = false;
 let flash = 0;
+const winningScore = 5;
 
 /* ## NewGame: Tell server that a game is initialized ## */
 function newGame() {
@@ -62,6 +64,7 @@ function joinGame() {
 /* ## InitializeGameWindow: Display a game window to the user ## */
 function initializeGameWindow() {
   initialScreen.style.display = "none";
+  postGameRestartButton.style.display = "none";
   document.getElementById("card").style.display = "none";
   gameScreen.style.display = "block";
   //
@@ -141,30 +144,38 @@ function handleGameOver(data) {
   }
   data = JSON.parse(data);
 
-  if (Math.max(data.score.P1, data.score.P2) >= 3) {
-    gameActive = false; // Close the game
-    // console.log("Close game");
-  }
-
   scoreboard.querySelector(".P1").innerText = "P1: " + data.score.P1;
   scoreboard.querySelector(".P2").innerText = "P2: " + data.score.P2;
-  if (data.score.P1 == 3) {
-    scoreboard.querySelector(".P1").style.color = "green";
-  }
-  if (data.score.P2 == 3) {
-    scoreboard.querySelector(".P2").style.color = "green";
+  postGameCard.style.display = "block";
+
+  // Close the game
+  if (Math.max(data.score.P1, data.score.P2) >= winningScore) {
+    gameActive = false;
+    if (data.score.P1 == data.score.P2) {
+      postGameCardText.innerText = "YOU TIED 1st PLACE!";
+    } else if (data.score.P1 > data.score.P2) {
+      scoreboard.querySelector(".P1").style.color = "green";
+      if (playerNumber == 1) postGameCardText.innerText = "You won: You are the superior snake duelist.";
+      if (playerNumber == 2) postGameCardText.innerText = "You lost: Better luck next time.";
+    } else if (data.score.P2 > data.score.P1) {
+      scoreboard.querySelector(".P2").style.color = "green";
+      if (playerNumber == 1) postGameCardText.innerText = "You lost: Better luck next time.";
+      if (playerNumber == 2) postGameCardText.innerText = "You won: You are the superior snake duelist.";
+    }
+    postGameRestartButton.style.display = "block";
+    playerNumber = null;
+    return;
   }
 
-  postGameCard.style.display = "block";
+  // Display round result
   if (data.winner === -1) {
-    postGameCardText.innerText = "You Tied :O";
+    postGameCardText.innerText = "ROUND TIED :o";
   } else if (data.winner === playerNumber) {
-    postGameCardText.innerText = "You Win ;)";
-  } else {
-    postGameCardText.innerText = "You Lose :(";
+    postGameCardText.innerText = "ROUND WON ;)";
+  } else if (playerNumber !== null) {
+    postGameCardText.innerText = "ROUND LOST :(";
   }
   startCountdown();
-  playerNumber = null;
 }
 
 /* ## HandleGameCode: ## */
@@ -193,7 +204,8 @@ function reset() {
 }
 
 function startCountdown() {
-  let counter = 6;
+  let counter = 5;
+  postGameCountdown.innerText = counter;
   let countdownTimer = setInterval(() => {
     counter--;
     postGameCountdown.innerText = counter;
@@ -204,4 +216,9 @@ function startCountdown() {
       postGameCountdown.innerText = "";
     }
   }, 1000);
+}
+
+function reloadPage() {
+  reset();
+  location.reload();
 }

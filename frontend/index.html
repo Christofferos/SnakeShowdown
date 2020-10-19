@@ -15,6 +15,11 @@
     />
 
     <style>
+      body,
+      html {
+        overflow-x: hidden;
+        overflow-y: hidden;
+      }
       #gameScreen {
         display: none;
       }
@@ -79,6 +84,7 @@
             >
               <div class="text mb-4"></div>
               <span class="countdown"></span>
+              <button class="restartButton btn-lg btn-success mx-4" onClick="reloadPage()">Create New Game</button>
             </div>
           </div>
         </div>

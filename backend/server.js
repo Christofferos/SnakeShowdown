@@ -1,7 +1,7 @@
 /* # Game Variables # */
 const io = require("socket.io")();
 const { initGame, gameLoop, getUpdatedVelocity } = require("./game");
-const { FRAME_RATE } = require("./constants");
+const { FRAME_RATE, WINNING_SCORE, DELAY_BETWEEN_ROUNDS } = require("./constants");
 const { makeid } = require("./utils");
 
 const state = {};
@@ -100,11 +100,14 @@ function startGameInterval(roomName) {
       if (winner == 2 || winner == -1) state[roomName].scores.P2++;
       emitGameOver(roomName, winner, { P1: state[roomName].scores.P1, P2: state[roomName].scores.P2 });
       //
-      if (Math.max(state[roomName].scores.P1, state[roomName].scores.P2) < 3) {
+      if (Math.max(state[roomName].scores.P1, state[roomName].scores.P2) < WINNING_SCORE) {
         state[roomName] = initGame([state[roomName].scores.P1, state[roomName].scores.P2]);
-        setTimeout(() => (intervalId = setInterval(() => intervalIdProcedure(), 1000 / FRAME_RATE)), 7000);
+        setTimeout(
+          () => (intervalId = setInterval(() => intervalIdProcedure(), 1000 / FRAME_RATE)),
+          DELAY_BETWEEN_ROUNDS
+        );
       } else {
-        // console.log("SERVER END GAME");
+        // console.log("SERVER END GAME" + WINNING_SCORE);
         state[roomName] = null; // Not necessary if game is restarted.
       }
       //
