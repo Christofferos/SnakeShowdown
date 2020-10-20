@@ -75,6 +75,11 @@ function initializeGameWindow() {
   contex.fillRect(0, 0, canvas.width, canvas.height);
   //
   document.addEventListener("keydown", keydown);
+  // Phone
+  document.addEventListener("touchstart", touchstart, false);
+  document.addEventListener("touchmove", touchmove, false);
+  document.addEventListener("touchend", touchend, false);
+  //
   gameActive = true;
 }
 
@@ -96,6 +101,7 @@ function paintGame(state) {
   contex.fillRect(food.x * size, food.y * size, size, size);
 
   paintPlayer(state.players[0], size, PLAYER_1_COLOR);
+  // Add a flash, the first round to indicate which snake this client controls.
   if (playerNumber == 1 && flash < 2) {
     setTimeout(() => {
       paintPlayer(state.players[0], size, FLASH_COLOR);
@@ -103,6 +109,7 @@ function paintGame(state) {
     flash++;
   }
   paintPlayer(state.players[1], size, PLAYER_2_COLOR);
+  // Add a flash.
   if (playerNumber == 2 && flash < 2) {
     setTimeout(() => {
       paintPlayer(state.players[1], size, FLASH_COLOR);
@@ -132,8 +139,11 @@ function handleGameState(gameState) {
     return;
   }
   gameState = JSON.parse(gameState);
+
+  // Update the number of food pieces each player have eaten.
   scoreboard.querySelector(".P1-snake").innerText = "(" + gameState.players[0].foodCollected + "/15)";
   scoreboard.querySelector(".P2-snake").innerText = "(" + gameState.players[1].foodCollected + "/15)";
+
   requestAnimationFrame(() => paintGame(gameState));
 }
 
@@ -221,4 +231,56 @@ function startCountdown() {
 function reloadPage() {
   reset();
   location.reload();
+}
+
+/* ## MOBILE ## */
+let swipedir,
+  startX,
+  startY,
+  distX,
+  distY,
+  threshold = 25, //required min distance traveled to be considered swipe
+  restraint = 100, // maximum distance allowed at the same time in perpendicular direction
+  allowedTime = 300, // maximum time allowed to travel that distance
+  elapsedTime,
+  startTime;
+
+let handleswipe =
+  ((swipedir) => {
+    if (swipedir == "up" || swipedir == "down" || swipedir == "left" || swipedir == "right") {
+      socket.emit("phoneSwipe", swipedir);
+    }
+  }) || function (swipedir) {};
+
+function touchstart(e) {
+  let touchobj = e.changedTouches[0];
+  swipedir = "none";
+  dist = 0;
+  startX = touchobj.pageX;
+  startY = touchobj.pageY;
+  startTime = new Date().getTime(); // record time when finger first makes contact with surface
+  e.preventDefault();
+}
+
+function touchmove(e) {
+  e.preventDefault();
+}
+
+function touchend(e) {
+  let touchobj = e.changedTouches[0];
+  distX = touchobj.pageX - startX; // get horizontal dist traveled by finger while in contact with surface
+  distY = touchobj.pageY - startY; // get vertical dist traveled by finger while in contact with surface
+  elapsedTime = new Date().getTime() - startTime;
+  if (elapsedTime <= allowedTime) {
+    // condition for a registered swipe is met
+    if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) {
+      // condition for horizontal swipe met
+      swipedir = distX < 0 ? "left" : "right"; // if dist traveled is negative, it indicates a swipe to the left
+    } else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint) {
+      // condition for vertical swipe met
+      swipedir = distY < 0 ? "up" : "down"; // if dist traveled is negative, it indicates a swipe upwards
+    }
+  }
+  handleswipe(swipedir);
+  e.preventDefault();
 }

@@ -10,6 +10,7 @@ const clientRooms = {};
 /* ## Connection: ## */
 io.on("connection", (client) => {
   client.on("keydown", handleKeydown);
+  client.on("phoneSwipe", handlePhoneSwipe);
   client.on("newGame", handleNewGame);
   client.on("joinGame", handleJoinGame);
 
@@ -82,6 +83,16 @@ io.on("connection", (client) => {
       state[roomName].players[client.number - 1].vel = vel;
       delayKeyDownInput(roomName);
     }
+  }
+
+  function handlePhoneSwipe(swipeDir) {
+    const roomName = clientRooms[client.id];
+    if (!roomName || state[roomName] == null) {
+      return;
+    }
+
+    alert("First: " + swipeDir);
+    console.log("Second: " + JSON.stringify(swipeDir));
   }
 });
 
