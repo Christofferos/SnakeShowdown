@@ -1,5 +1,10 @@
 # snakeMultiplayer
-Main topics covered: Socket IO, client-to-server communication, client [UI and keylistener], server [game logic and data handling], setting up front-end on Netlify, setting up back-end (server) on Heroku.
+Main topics covered: 
+* Socket IO, 
+* client-to-server communication, 
+* client [UI and keylistener], 
+* server [game logic and data handling], 
+* setting up front-end on Netlify, setting up back-end (server) on Heroku.
 
 ## Details:
 
