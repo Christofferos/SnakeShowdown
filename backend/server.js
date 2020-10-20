@@ -122,7 +122,7 @@ function startGameInterval(roomName) {
         );
       } else {
         // console.log("SERVER END GAME" + WINNING_SCORE);
-        state[roomName] = null; // Not necessary if game is restarted.
+        state[roomName] = null;
       }
       //
     }

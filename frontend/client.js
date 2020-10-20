@@ -61,6 +61,23 @@ function joinGame() {
   initializeGameWindow();
 }
 
+/* ## HandleGameCode: ## */
+function handleGameCode(gameCode) {
+  gameCodeDisplay.innerText = gameCode;
+}
+
+/* ## HandleUnknownCode: ## */
+function handleUnknownCode() {
+  reset();
+  alert("Unknown Game Code");
+}
+
+/* ## HandleTooManyPlayers: ## */
+function handleTooManyPlayers() {
+  reset();
+  alert("This game is already in progress");
+}
+
 /* ## InitializeGameWindow: Display a game window to the user ## */
 function initializeGameWindow() {
   initialScreen.style.display = "none";
@@ -77,7 +94,6 @@ function initializeGameWindow() {
   document.addEventListener("keydown", keydown);
   // Phone
   document.addEventListener("touchstart", touchstart, false);
-  document.addEventListener("touchmove", touchmove, false);
   document.addEventListener("touchend", touchend, false);
   //
   gameActive = true;
@@ -188,23 +204,6 @@ function handleGameOver(data) {
   startCountdown();
 }
 
-/* ## HandleGameCode: ## */
-function handleGameCode(gameCode) {
-  gameCodeDisplay.innerText = gameCode;
-}
-
-/* ## HandleUnknownCode: ## */
-function handleUnknownCode() {
-  reset();
-  alert("Unknown Game Code");
-}
-
-/* ## HandleTooManyPlayers: ## */
-function handleTooManyPlayers() {
-  reset();
-  alert("This game is already in progress");
-}
-
 /* ## Reset: ## */
 function reset() {
   playerNumber = null;
@@ -239,8 +238,8 @@ let swipedir,
   startY,
   distX,
   distY,
-  threshold = 25, //required min distance traveled to be considered swipe
-  restraint = 100, // maximum distance allowed at the same time in perpendicular direction
+  threshold = 5, //required min distance traveled to be considered swipe
+  restraint = 50, // maximum distance allowed at the same time in perpendicular direction
   allowedTime = 300, // maximum time allowed to travel that distance
   elapsedTime,
   startTime;
@@ -258,11 +257,6 @@ function touchstart(e) {
   startX = touchobj.pageX;
   startY = touchobj.pageY;
   startTime = new Date().getTime(); // record time when finger first makes contact with surface
-  e.preventDefault();
-}
-
-function touchmove(e) {
-  e.preventDefault();
 }
 
 function touchend(e) {
@@ -278,5 +272,4 @@ function touchend(e) {
     }
   }
   handleswipe(swipedir);
-  e.preventDefault();
 }
