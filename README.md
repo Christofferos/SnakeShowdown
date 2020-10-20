@@ -1,4 +1,4 @@
-# snakeMultiplayer
+# snakeMultiplayer / Snake Showdown
 * Try the application yourself: 
 <a href="https://mystifying-austin-efe3a7.netlify.app/" target="_blank">https://mystifying-austin-efe3a7.netlify.app/</a>
 
