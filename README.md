@@ -6,6 +6,8 @@ Main topics covered:
 * server [game logic and data handling], 
 * setting up front-end on Netlify, setting up back-end (server) on Heroku.
 
+* Hyperlink: https://mystifying-austin-efe3a7.netlify.app/ 
+
 ## Details:
 
 Web-sockets/server is sticky meaning that when users connect they will be conntected to the same server. 
