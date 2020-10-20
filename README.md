@@ -1,4 +1,6 @@
 # snakeMultiplayer
+* Try the application yourself: [https://mystifying-austin-efe3a7.netlify.app/](https://mystifying-austin-efe3a7.netlify.app/){:target="_blank"}
+
 Main topics covered: 
 * Socket IO, 
 * client-to-server communication, 
@@ -6,7 +8,6 @@ Main topics covered:
 * server [game logic and data handling], 
 * setting up front-end on Netlify, setting up back-end (server) on Heroku.
 
-* Hyperlink: https://mystifying-austin-efe3a7.netlify.app/ 
 
 ## Details:
 
