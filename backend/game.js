@@ -4,6 +4,7 @@ module.exports = {
   initGame,
   gameLoop,
   getUpdatedVelocity,
+  getUpdatedVelocitySwipe,
 };
 
 function initGame(scores) {
@@ -219,6 +220,36 @@ function getUpdatedVelocity(keyCode, player) {
     }
     case 40: {
       // Up
+      if (!(player.vel.y < 0)) {
+        return { x: 0, y: 1 };
+      } else return -1;
+    }
+    default: {
+      return -1;
+    }
+  }
+}
+
+function getUpdatedVelocitySwipe(swipeDir, player) {
+  switch (swipeDir) {
+    case "left": {
+      if (!(player.vel.x > 0)) {
+        if (player.vel.x == 0 && player.vel.y == 0 && player.id == 1) return -1; // Disallow left on start.
+        return { x: -1, y: 0 };
+      } else return -1;
+    }
+    case "up": {
+      if (!(player.vel.y > 0)) {
+        return { x: 0, y: -1 };
+      } else return -1;
+    }
+    case "right": {
+      if (!(player.vel.x < 0)) {
+        if (player.vel.x == 0 && player.vel.y == 0 && player.id == 2) return -1; // Disallow right on start.
+        return { x: 1, y: 0 };
+      } else return -1;
+    }
+    case "down": {
       if (!(player.vel.y < 0)) {
         return { x: 0, y: 1 };
       } else return -1;

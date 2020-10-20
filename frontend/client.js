@@ -3,7 +3,7 @@
 //*/
 
 /* [DEVELOPMENT]: LOCAL */
-//const socket = io("http://localhost:3000");
+// const socket = io("http://localhost:3000");
 
 /* [PUBLIC]: ONLINE (socket, listens for messages from the server) */
 const socket = io("https://warm-harbor-48465.herokuapp.com/");
@@ -77,7 +77,7 @@ function initializeGameWindow() {
   document.addEventListener("keydown", keydown);
   // Phone
   document.addEventListener("touchstart", touchstart, false);
-  document.addEventListener("touchmove", touchmove, false);
+  // document.addEventListener("touchmove", touchmove, false);
   document.addEventListener("touchend", touchend, false);
   //
   gameActive = true;
@@ -239,18 +239,17 @@ let swipedir,
   startY,
   distX,
   distY,
-  threshold = 25, //required min distance traveled to be considered swipe
+  threshold = 15, //required min distance traveled to be considered swipe
   restraint = 100, // maximum distance allowed at the same time in perpendicular direction
   allowedTime = 300, // maximum time allowed to travel that distance
   elapsedTime,
   startTime;
 
-let handleswipe =
-  ((swipedir) => {
-    if (swipedir == "up" || swipedir == "down" || swipedir == "left" || swipedir == "right") {
-      socket.emit("phoneSwipe", swipedir);
-    }
-  }) || function (swipedir) {};
+let handleswipe = (swipedir) => {
+  if (swipedir == "up" || swipedir == "down" || swipedir == "left" || swipedir == "right") {
+    socket.emit("phoneSwipe", swipedir);
+  }
+};
 
 function touchstart(e) {
   let touchobj = e.changedTouches[0];
@@ -259,12 +258,12 @@ function touchstart(e) {
   startX = touchobj.pageX;
   startY = touchobj.pageY;
   startTime = new Date().getTime(); // record time when finger first makes contact with surface
-  e.preventDefault();
+  // e.preventDefault();
 }
 
-function touchmove(e) {
+/* function touchmove(e) {
   e.preventDefault();
-}
+} */
 
 function touchend(e) {
   let touchobj = e.changedTouches[0];
@@ -272,15 +271,12 @@ function touchend(e) {
   distY = touchobj.pageY - startY; // get vertical dist traveled by finger while in contact with surface
   elapsedTime = new Date().getTime() - startTime;
   if (elapsedTime <= allowedTime) {
-    // condition for a registered swipe is met
     if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) {
-      // condition for horizontal swipe met
       swipedir = distX < 0 ? "left" : "right"; // if dist traveled is negative, it indicates a swipe to the left
     } else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint) {
-      // condition for vertical swipe met
       swipedir = distY < 0 ? "up" : "down"; // if dist traveled is negative, it indicates a swipe upwards
     }
   }
   handleswipe(swipedir);
-  e.preventDefault();
+  // e.preventDefault();
 }

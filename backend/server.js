@@ -1,6 +1,6 @@
 /* # Game Variables # */
 const io = require("socket.io")();
-const { initGame, gameLoop, getUpdatedVelocity } = require("./game");
+const { initGame, gameLoop, getUpdatedVelocity, getUpdatedVelocitySwipe } = require("./game");
 const { FRAME_RATE, WINNING_SCORE, DELAY_BETWEEN_ROUNDS } = require("./constants");
 const { makeid } = require("./utils");
 
@@ -91,8 +91,11 @@ io.on("connection", (client) => {
       return;
     }
 
-    alert("First: " + swipeDir);
-    console.log("Second: " + JSON.stringify(swipeDir));
+    const vel = getUpdatedVelocitySwipe(swipeDir, state[roomName].players[client.number - 1]);
+
+    if (vel !== -1 && state[roomName] !== null) {
+      state[roomName].players[client.number - 1].vel = vel;
+    }
   }
 });
 
