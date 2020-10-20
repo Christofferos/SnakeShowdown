@@ -1,5 +1,6 @@
 # snakeMultiplayer
-* Try the application yourself: [https://mystifying-austin-efe3a7.netlify.app/](https://mystifying-austin-efe3a7.netlify.app/){:target="_blank"}
+* Try the application yourself: 
+<a href="https://mystifying-austin-efe3a7.netlify.app/" target="_blank">https://mystifying-austin-efe3a7.netlify.app/</a>
 
 Main topics covered: 
 * Socket IO, 
