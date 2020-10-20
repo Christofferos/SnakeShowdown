@@ -94,6 +94,7 @@ function initializeGameWindow() {
   document.addEventListener("keydown", keydown);
   // Phone
   document.addEventListener("touchstart", touchstart, false);
+  document.addEventListener("touchmove", touchmove, false);
   document.addEventListener("touchend", touchend, false);
   //
   gameActive = true;
@@ -238,7 +239,7 @@ let swipedir,
   startY,
   distX,
   distY,
-  threshold = 20, //required min distance traveled to be considered swipe
+  threshold = 25, //required min distance traveled to be considered swipe
   restraint = 100, // maximum distance allowed at the same time in perpendicular direction
   allowedTime = 300, // maximum time allowed to travel that distance
   elapsedTime,
@@ -257,6 +258,11 @@ function touchstart(e) {
   startX = touchobj.pageX;
   startY = touchobj.pageY;
   startTime = new Date().getTime(); // record time when finger first makes contact with surface
+  e.preventDefault();
+}
+
+function touchmove(e) {
+  e.preventDefault();
 }
 
 function touchend(e) {
@@ -272,4 +278,5 @@ function touchend(e) {
     }
   }
   handleswipe(swipedir);
+  e.preventDefault();
 }
