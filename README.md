@@ -8,7 +8,7 @@ Main topics covered:
 
 ## Details:
 
-Web-sockets/server is sticky meaning (everytime a user connects they will be conntected to the same server). 
+Web-sockets/server is sticky meaning that when users connect they will be conntected to the same server. 
 
 **Enable flag:**
 heroku features:enable http-session-affinity --app [APP_NAME]
