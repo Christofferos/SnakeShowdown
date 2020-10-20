@@ -1,7 +1,9 @@
 # snakeMultiplayer
-Socket IO, Netlify, Heroku
+Main topics covered: Socket IO, client-to-server communication, client [UI and keylistener], server [game logic and data handling], setting up front-end on Netlify, setting up back-end (server) on Heroku.
 
-Web sockets, sticky servers - everytime a user connects they will be conntected to the same server. (Session infinity flag in heroku enabled.)
+## Details:
+
+Web-sockets/server is sticky meaning (everytime a user connects they will be conntected to the same server). 
 
 **Enable flag:**
 heroku features:enable http-session-affinity --app [APP_NAME]
