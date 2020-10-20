@@ -238,8 +238,8 @@ let swipedir,
   startY,
   distX,
   distY,
-  threshold = 5, //required min distance traveled to be considered swipe
-  restraint = 50, // maximum distance allowed at the same time in perpendicular direction
+  threshold = 20, //required min distance traveled to be considered swipe
+  restraint = 100, // maximum distance allowed at the same time in perpendicular direction
   allowedTime = 300, // maximum time allowed to travel that distance
   elapsedTime,
   startTime;
